@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
 import { UserRole } from "../types";
 
-@Entity()
-export class User {
+@Entity('users')
+export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -43,6 +43,11 @@ export class User {
         length: 360
     })
     verification_token: string
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date;
 
 
 }
