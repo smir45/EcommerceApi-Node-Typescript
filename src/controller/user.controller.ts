@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User }  from "../entity/User"
-// import bcrypt from 'bcrypt'
+import argon2 from "argon2";
+import otpGenerator from "otp-generator"
 
 
 export class UserController {
@@ -25,15 +26,27 @@ export class UserController {
     async createUser(req: Request, res: Response){
         const userData = req.body
         try{
-            // const hashedPassword = bcrypt.genSalt(10, userData.password)
-            // const token = Math.floor(Math.random() * 4)
-            const userPasswordd = "this is trial"
+
+            const existingUser = await User.findOne({
+                where: {
+                    email: userData.email
+                }
+            })
+
+            if(existingUser) return res.status(500).json({message: "User Already Exists"})
+
+            const hashedPassword = await argon2.hash(userData.password)
+
+            const generated_Otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false })
+
+            console.log(generated_Otp)
+
             const user = await User.create({
                 fName: userData.firstname,
                 lName: userData.lastname,
                 email: userData.email,
-                password: userPasswordd,
-                // verification_token: token,
+                password: hashedPassword,
+                verification_token: generated_Otp,
 
 
             })
