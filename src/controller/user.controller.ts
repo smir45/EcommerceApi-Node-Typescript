@@ -39,15 +39,12 @@ export class UserController {
 
             const generated_Otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false })
 
-            console.log(generated_Otp)
-
             const user = await User.create({
-                fName: userData.firstname,
-                lName: userData.lastname,
+                fName: userData.fname,
+                lName: userData.lname,
                 email: userData.email,
                 password: hashedPassword,
                 verification_token: generated_Otp,
-
 
             })
             return res.status(201).json({
